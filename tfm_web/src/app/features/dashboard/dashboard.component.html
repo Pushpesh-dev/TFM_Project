@@ -6,6 +6,12 @@
             <h1>User Details</h1>
             <p class="welcome-text">Welcome back, {{ userName }}</p>
         </div>
+
+        <div class="search-box">
+            <input type="text" [(ngModel)]="searchText" placeholder="Search....." (input)="search()">
+            <button (click)="search()">Search</button>
+        </div>
+
         <button *ngIf="roleId === 1" routerLink="/register" class="add-btn premium-btn">
             <span class="material-icons">add</span> Add New User
         </button>
@@ -18,7 +24,7 @@
                     <tr>
                         <th>Name</th>
                         <th>Email</th>
-                        <th *ngIf="roleId === 1">Role</th>
+                        <th>Role</th>
                         <th>Joined</th>
                         <th>Department</th>
                         <th *ngIf="roleId === 1">Actions</th>
@@ -28,7 +34,7 @@
                     <tr *ngFor="let user of users">
                         <td>{{user.name}}</td>
                         <td>{{user.email}}</td>
-                        <td *ngIf="roleId === 1">
+                        <td>
                             <span class="badge"
                                 [ngClass]="{'badge-admin': user.roleName === 'Admin', 'badge-user': user.roleName !== 'Admin'}">
                                 {{user.roleName}}

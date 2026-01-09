@@ -45,3 +45,10 @@
 .material-icons {
     font-size: 24px;
 }
+
+.actions{
+    display: flex;
+    gap: 12px;
+    font-size: 1.5rem;
+    font-weight: 2rem;
+}

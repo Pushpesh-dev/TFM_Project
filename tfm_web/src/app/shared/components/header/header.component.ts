@@ -9,7 +9,11 @@ import { AuthService } from 'src/app/core/services/auth.service';
 })
 export class HeaderComponent {
 
-    constructor(public router: Router, private authService: AuthService) { }
+    roleType: string = '';
+
+    constructor(public router: Router, private authService: AuthService) {
+        this.roleType = this.authService.getRoleType() || '';
+     }
 
     logOut() {
         this.authService.logout();

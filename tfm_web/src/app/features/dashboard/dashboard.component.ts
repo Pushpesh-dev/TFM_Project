@@ -10,7 +10,10 @@ import { AuthService } from 'src/app/core/services/auth.service';
 })
 export class DashboardComponent implements OnInit {
 
-    users: any[] = [];
+    users: any[] = [];      // for table (filtered)
+    allUsers: any[] = [];  // original API data
+    searchText: string = '';
+
     isLoading = false;
     roleId: number = 0;
     roleType: string = '';
@@ -38,6 +41,7 @@ export class DashboardComponent implements OnInit {
         this.isLoading = true;
         this.userService.getUsers().subscribe({
             next: (data) => {
+                this.allUsers = data;
                 this.users = data;
                 this.isLoading = false;
             },
@@ -48,6 +52,14 @@ export class DashboardComponent implements OnInit {
             }
         });
     }
+
+    search(){
+        debugger
+        this.users = this.allUsers.filter(user=>
+            user.name.toLowerCase().includes(this.searchText.toLowerCase()) 
+        );
+    }
+    
 
     openEditModal(user: any) {
         // Clone object to avoid live editing in table
