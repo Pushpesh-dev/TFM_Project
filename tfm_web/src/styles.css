@@ -1,0 +1,62 @@
+/* Global Styles */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+
+:root {
+  --primary-color: #667eea;
+  --secondary-color: #764ba2;
+  --success-color: #28a745;
+  --danger-color: #dc3545;
+  --warning-color: #ffc107;
+  --info-color: #17a2b8;
+  --text-color: #333;
+  --bg-color: #f5f7fa;
+  --font-family: 'Poppins', sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-family);
+}
+
+body {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  line-height: 1.6;
+}
+
+/* Toastr Overrides */
+.toast-container {
+  z-index: 999999 !important;
+}
+
+.toast-top-right {
+  top: 20px !important;
+  right: 20px !important;
+}
+
+.toast {
+  border-radius: 8px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+  font-size: 14px !important;
+  opacity: 1 !important;
+}
+
+.toast-success {
+  background-color: var(--success-color) !important;
+}
+
+.toast-error {
+  background-color: var(--danger-color) !important;
+}
+
+.toast-warning {
+  background-color: var(--warning-color) !important;
+  color: #333 !important;
+}
+
+.toast-info {
+  background-color: var(--info-color) !important;
+}

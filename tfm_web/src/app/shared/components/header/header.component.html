@@ -1,0 +1,15 @@
+<header *ngIf="router.url !== '/' && router.url !== '/register'">
+    <nav class="navbar">
+        <div class="logo">
+            <span class="brand">TFM</span>
+        </div>
+        <div class="nav-links">
+            <a routerLink="/dashboard" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Dashboard</a>
+        </div>
+        <div class="actions">
+            <button class="logout-btn" (click)="logOut()" title="Logout">
+                <span class="material-icons">logout</span>
+            </button>
+        </div>
+    </nav>
+</header>

@@ -1,0 +1,294 @@
+.dashboard-container {
+    padding: 2rem;
+    background-color: #f8f9fa;
+    min-height: calc(100vh - 64px);
+}
+
+.header-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.header-title h1 {
+    font-size: 1.8rem;
+    color: #333;
+    margin-bottom: 0.2rem;
+}
+
+.welcome-text {
+    color: #666;
+    font-size: 1rem;
+    margin-top: 0;
+}
+
+.add-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 50px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+}
+
+.add-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+}
+
+.table-responsive {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    /* Softer, deeper shadow */
+    overflow: hidden;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.user-table {
+    width: 100%;
+    border-collapse: separate;
+    /* Allows border radius on rows if needed */
+    border-spacing: 0;
+}
+
+.user-table th,
+.user-table td {
+    padding: 1.25rem 1.5rem;
+    /* More breathing room */
+    text-align: left;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.user-table th {
+    background-color: #fafbfd;
+    /* Very subtle grey */
+    color: #5a6b7c;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.05em;
+}
+
+.user-table tbody tr {
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    animation: fadeInRow 0.5s ease forwards;
+    opacity: 0;
+}
+
+/* Staggered animation delay for up to 10 rows */
+.user-table tbody tr:nth-child(1) {
+    animation-delay: 0.1s;
+}
+
+.user-table tbody tr:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.user-table tbody tr:nth-child(3) {
+    animation-delay: 0.3s;
+}
+
+.user-table tbody tr:nth-child(4) {
+    animation-delay: 0.4s;
+}
+
+.user-table tbody tr:nth-child(5) {
+    animation-delay: 0.5s;
+}
+
+.user-table tbody tr:nth-child(6) {
+    animation-delay: 0.6s;
+}
+
+.user-table tbody tr:nth-child(7) {
+    animation-delay: 0.7s;
+}
+
+.user-table tbody tr:nth-child(8) {
+    animation-delay: 0.8s;
+}
+
+.user-table tbody tr:nth-child(9) {
+    animation-delay: 0.9s;
+}
+
+.user-table tbody tr:nth-child(10) {
+    animation-delay: 1.0s;
+}
+
+@keyframes fadeInRow {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.user-table tr:hover {
+    background-color: #f8faff;
+    transform: scale(1.005);
+    /* Subtle scale effect */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    z-index: 1;
+    position: relative;
+}
+
+.badge {
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.badge-admin {
+    background: #e3f2fd;
+    color: #1976d2;
+}
+
+.badge-user {
+    background: #e8f5e9;
+    color: #388e3c;
+}
+
+.actions-cell {
+    display: flex;
+    gap: 10px;
+}
+
+.icon-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 4px;
+    transition: background 0.2s;
+}
+
+.icon-btn:hover {
+    background: #f0f0f0;
+}
+
+.icon-btn.edit {
+    color: #f59e0b;
+}
+
+.icon-btn.delete {
+    color: #e74c3c;
+}
+
+.no-data {
+    text-align: center;
+    padding: 2rem;
+    color: #999;
+}
+
+/* Modal */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-box {
+    background: white;
+    width: 400px;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.modal-header h3 {
+    margin: 0;
+    color: #333;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #999;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #555;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+}
+
+.modal-footer {
+    margin-top: 1.5rem;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.btn {
+    padding: 8px 16px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.btn-secondary {
+    background: #e0e0e0;
+    color: #333;
+}
+
+.btn-primary {
+    background: #667eea;
+    color: white;
+}

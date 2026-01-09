@@ -1,0 +1,86 @@
+<app-loader [loading]="isLoading"></app-loader>
+
+<div class="dashboard-container">
+    <div class="header-section">
+        <div class="header-title">
+            <h1>User Details</h1>
+            <p class="welcome-text">Welcome back, {{ userName }}</p>
+        </div>
+        <button *ngIf="roleId === 1" routerLink="/register" class="add-btn premium-btn">
+            <span class="material-icons">add</span> Add New User
+        </button>
+    </div>
+
+    <div class="content-section">
+        <div class="table-responsive">
+            <table class="user-table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th *ngIf="roleId === 1">Role</th>
+                        <th>Joined</th>
+                        <th>Department</th>
+                        <th *ngIf="roleId === 1">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let user of users">
+                        <td>{{user.name}}</td>
+                        <td>{{user.email}}</td>
+                        <td *ngIf="roleId === 1">
+                            <span class="badge"
+                                [ngClass]="{'badge-admin': user.roleName === 'Admin', 'badge-user': user.roleName !== 'Admin'}">
+                                {{user.roleName}}
+                            </span>
+                        </td>
+                        <td>{{ user.joiningDate | date:'mediumDate' }}</td>
+                        <td>{{user.department}}</td>
+                        <td *ngIf="roleId === 1" class="actions-cell">
+                            <button class="icon-btn edit" (click)="openEditModal(user)" title="Edit">
+                                <span class="material-icons">edit</span>
+                            </button>
+                            <button class="icon-btn delete" (click)="deleteUser(user.id)" title="Delete">
+                                <span class="material-icons">delete</span>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr *ngIf="users.length === 0 && !isLoading">
+                        <td colspan="6" class="no-data">No users found.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" *ngIf="isModalOpen">
+    <div class="modal-box">
+        <div class="modal-header">
+            <h3>Update User</h3>
+            <button class="close-btn" (click)="closeModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label>Name</label>
+                <input type="text" [(ngModel)]="selectedUser.name">
+            </div>
+            <div class="form-group">
+                <label>Email</label>
+                <input type="text" [(ngModel)]="selectedUser.email">
+            </div>
+            <div class="form-group">
+                <label>Department</label>
+                <select [(ngModel)]="selectedUser.department">
+                    <option value="Developer">Developer</option>
+                    <option value="Designer">Designer</option>
+                </select>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" (click)="closeModal()">Cancel</button>
+            <button class="btn btn-primary" (click)="updateUser()">Save Changes</button>
+        </div>
+    </div>
+</div>
