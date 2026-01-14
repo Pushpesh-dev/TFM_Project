@@ -14,6 +14,11 @@ export class AuthService {
     private roleType = 'roleType';
     private nameKey = 'name';
 
+     private roleTypeSubject = new BehaviorSubject<string>(
+        localStorage.getItem(this.roleType) || ''
+    );
+    roleType$ = this.roleTypeSubject.asObservable();
+
     constructor(private http: HttpClient, private router: Router) { }
 
     login(credentials: any): Observable<any> {
@@ -23,16 +28,14 @@ export class AuthService {
                     localStorage.setItem(this.tokenKey, response.token);
                     // Assuming response.user.roleId exists as per original code
                     if (response.user) {
-                        if (response.user.roleId) {
+                        if (response.user.roleId != undefined) {
                             localStorage.setItem(this.roleKey, response.user.roleId.toString());
+                        }
+                        if (response.user.roleType != undefined) {
+                            localStorage.setItem(this.roleType, response.user.roleType.toString());
                         }
                         if (response.user.name) {
                             localStorage.setItem(this.nameKey, response.user.name);
-                        }
-                        if (response.user.roleId == 1) {
-                            localStorage.setItem(this.roleType, 'Admin');
-                        } else {
-                            localStorage.setItem(this.roleType, 'User');
                         }
                     }
                 }
@@ -48,7 +51,9 @@ export class AuthService {
         localStorage.removeItem(this.tokenKey);
         localStorage.removeItem(this.roleKey);
         localStorage.removeItem(this.nameKey);
+        localStorage.removeItem(this.roleType);
         this.router.navigate(['/']);
+         this.roleTypeSubject.next('');
     }
 
     isLoggedIn(): boolean {

@@ -1,134 +1,137 @@
+/* Page center */
 .login-container {
     min-height: 100vh;
     display: flex;
-    justify-content: center;
     align-items: center;
-    /* Soft, light gradient: White top-left to Dim Blue bottom-right */
-    background: linear-gradient(135deg, #ffffff 0%, #e3f2fd 100%);
+    justify-content: center;
+    background: linear-gradient(135deg, #667eea, #764ba2);
     padding: 20px;
 }
 
+/* Card */
 .login-card {
-    background: rgba(255, 255, 255, 0.95);
-    /* High opacity for readability but slight translucency */
-    backdrop-filter: blur(10px);
-    padding: 3rem;
-    border-radius: 20px;
-    /* Rounder corners */
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    background: #fff;
     width: 100%;
-    max-width: 420px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    transform: translateY(0);
-    transition: transform 0.3s ease;
+    max-width: 400px;
+    padding: 30px 28px;
+    border-radius: 12px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
 }
 
-.login-card:hover {
-    transform: translateY(-5px);
+/* Header */
+.login-header {
+    text-align: center;
+    margin-bottom: 25px;
 }
 
 .login-header h1 {
-    font-size: 2rem;
+    margin: 0;
+    font-size: 28px;
     color: #333;
-    margin-bottom: 0.5rem;
-    text-align: center;
 }
 
 .login-header p {
-    color: #666;
-    text-align: center;
-    margin-bottom: 2rem;
+    margin-top: 8px;
+    font-size: 14px;
+    color: #777;
 }
 
+/* Form group */
 .form-group {
-    margin-bottom: 1.5rem;
+    margin-bottom: 18px;
+    position: relative;
 }
 
 .form-group label {
     display: block;
-    margin-bottom: 0.5rem;
-    color: #444;
+    margin-bottom: 6px;
+    font-size: 14px;
     font-weight: 500;
+    color: #333;
 }
 
+/* Input */
 .form-group input {
     width: 100%;
-    padding: 14px;
-    border: 2px solid #f0f0f0;
-    /* Thicker, softer border */
-    border-radius: 10px;
-    font-size: 1rem;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    background-color: #fafafa;
+    padding: 10px 42px 10px 12px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
 }
 
+/* Focus */
 .form-group input:focus {
     border-color: #667eea;
-    background-color: #fff;
-    box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
-    outline: none;
-    transform: scale(1.01);
+    box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.15);
 }
 
+/* Invalid input */
 .form-group input.invalid {
-    border-color: #e74c3c;
-    background-color: #fff8f8;
+    border-color: #e53935;
 }
 
+/* Error message */
 .error-msg {
-    color: #e74c3c;
-    font-size: 0.85rem;
-    margin-top: 0.25rem;
     display: block;
-    animation: slideDown 0.2s ease forwards;
+    margin-top: 5px;
+    font-size: 12px;
+    color: #e53935;
 }
 
-@keyframes slideDown {
-    from {
-        opacity: 0;
-        transform: translateY(-5px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+/* Eye icon */
+.eye-icon {
+    position: absolute;
+    right: 12px;
+    top: 40px;
+    cursor: pointer;
+    font-size: 20px;
+    color: #666;
+    user-select: none;
 }
 
+.eye-icon:hover {
+    color: #333;
+}
+
+/* Button */
 .submit-btn {
     width: 100%;
-    padding: 14px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
+    margin-top: 10px;
+    padding: 12px;
+    border-radius: 6px;
     border: none;
-    border-radius: 10px;
-    font-size: 1.05rem;
+    font-size: 15px;
     font-weight: 600;
+    background: #667eea;
+    color: #fff;
     cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    transition: background 0.2s, transform 0.1s;
 }
 
 .submit-btn:hover:not(:disabled) {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+    background: #5a6fdc;
+    transform: translateY(-1px);
 }
 
 .submit-btn:disabled {
-    background: #a3abf5;
+    background: #aab2f0;
     cursor: not-allowed;
 }
 
+/* Footer */
 .login-footer {
-    margin-top: 2rem;
+    margin-top: 20px;
     text-align: center;
-    font-size: 0.9rem;
+    font-size: 13px;
+    color: #555;
 }
 
 .login-footer a {
     color: #667eea;
+    font-weight: 500;
     text-decoration: none;
-    font-weight: 600;
 }
 
 .login-footer a:hover {

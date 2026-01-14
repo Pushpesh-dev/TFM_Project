@@ -30,6 +30,13 @@ export class LoginComponent implements OnInit {
         });
     }
 
+    showPassword: boolean = false;
+
+        togglePassword() {
+        this.showPassword = !this.showPassword;
+        }
+
+
     submit() {
         if (this.loginForm.invalid) {
             this.loginForm.markAllAsTouched();
@@ -44,6 +51,7 @@ export class LoginComponent implements OnInit {
 
         this.authService.login(credentials).subscribe({
             next: (response) => {
+                console.log(response);
                 this.toastr.success('Login successful');
                 this.isLoading = false;
                 // Navigation could be done here or in AuthService if centralized

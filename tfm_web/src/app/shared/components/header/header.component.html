@@ -7,8 +7,9 @@
             <a routerLink="/dashboard" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Dashboard</a>
         </div>
         <div class="actions">
-            <span>{{roleType}}</span>
-            <button class="logout-btn" (click)="logOut()" title="Logout">
+            <span class="role">{{ authService.roleType$ | async }}</span>
+
+            <button class="logout-btn" (click)="logOut()" title=" Click to Logout">
                 <span class="material-icons">logout</span>
             </button>
         </div>

@@ -19,8 +19,12 @@
 
             <div class="form-group">
                 <label for="password">Password</label>
-                <input type="password" id="password" formControlName="password" placeholder="Enter your password"
+                <input [type]="showPassword ? 'text' : 'password'" id="password" formControlName="password" placeholder="Enter your password"
                     [class.invalid]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
+                     <span class="material-icons eye-icon" (click)="togglePassword()">
+                        {{ showPassword ? 'visibility' : 'visibility_off' }}
+                    </span>
+
                 <small class="error-msg"
                     *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
                     Password is required.

@@ -153,3 +153,21 @@
 .register-footer a:hover {
     text-decoration: underline;
 }
+
+.eye-icon {
+    position: absolute;
+    right: 12px;
+    top: 50px;
+    cursor: pointer;
+    font-size: 20px;
+    color: #666;
+    user-select: none;
+}
+
+.eye-icon:hover {
+    color: #333;
+}
+
+.form-group {
+    position: relative;
+}

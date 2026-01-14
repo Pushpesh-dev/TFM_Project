@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Data;
 using System.Data.SqlClient;
+using System.Security.Claims;
+
 //using tfm_web.Filters;
 using tfm_web.Models;
 using tfm_web.Services;
@@ -22,6 +24,11 @@ namespace tfm_web.Controllers
             _Config = configuration;
             _emailService = emailService;
             con = new SqlConnection(configuration.GetConnectionString("DefaultConnection"));
+        }
+
+        private string GetWelcomeEmailSubject()
+        {
+            return "Welcome to the company";
         }
 
         //Add an new user
@@ -53,7 +60,7 @@ namespace tfm_web.Controllers
                 {
                     try
                     {
-                        string subject = "Welcom to the company";
+                        string subject = GetWelcomeEmailSubject();
                         string Body = $@"
                             <h2> Hi {AddUsers.Name},</h2>
                             <p>Welcome to the team! Your account has been created. </p>
@@ -99,15 +106,25 @@ namespace tfm_web.Controllers
         //get  data
         [Authorize(Roles = "Admin,Employee")]
         [HttpGet("getUsers")]
-        public async Task<IActionResult> GetUsers()
+        public async Task<ApiResponse<List<UserWithRole>>> GetUsers()
         {
+            var response = new ApiResponse<List<UserWithRole>>();
             var roleClaim = User.Claims.FirstOrDefault(c => c.Type == "roleId");
 
             if (roleClaim == null)
-                return Unauthorized("Required claims missing in token");
+            {
+                response.Success = false;
+                response.Message = "Required claims missing in token";
+                return response;
+            }
 
             if (!int.TryParse(roleClaim.Value, out int roleIdFromToken))
-                return BadRequest("Invalid roleId in token");
+            {
+                response.Success = false;
+                response.Message = "Invalid roleId in token";
+                return response;
+            }
+
 
             var users = new List<UserWithRole>();
 
@@ -139,14 +156,19 @@ namespace tfm_web.Controllers
                         RoleName = reader["RoleName"]?.ToString() ?? string.Empty,
                         Deleted = Convert.ToInt32(reader["Deleted"]) == 1
                     });
-                }
+                } 
+                response.Success = true;
+                response.Message = "Users fetched successfully";
+                response.Data = users;
+            }
 
-                return Ok(users);
-            }
-            catch (Exception)
+            catch
             {
-                return StatusCode(500, "An error occurred while fetching users");
+                response.Success = false;
+                response.Message = "An error occurred while fetching";
             }
+            return response;
+
         }
 
         //login
@@ -154,7 +176,7 @@ namespace tfm_web.Controllers
         public async Task<IActionResult> SignIn([FromBody] Login login)
         {
             using (SqlCommand cmd = new SqlCommand("LoginData", con))
-            {
+            { 
 
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@Email", login.Email);
@@ -171,14 +193,16 @@ namespace tfm_web.Controllers
                     {
                         var user = new
                         {
+
                             Id = Convert.ToInt32(reader["Id"]),
                             Email = reader["Email"].ToString(),
                             RoleId = Convert.ToInt32(reader["RoleId"]),
+                            RoleName = reader["RoleName"].ToString(),
                             Name = reader["Name"].ToString()
                         };
 
                         var jwtToken = new JwtToken(_Config);
-                        String token = jwtToken.GenerateJSONWebToken(user.Id, user.Email, user.RoleId);
+                        String token = jwtToken.GenerateJSONWebToken(user.Id, user.Email, user.RoleName, user.RoleId);
                         return Ok(new { user, token });
                     }
 
@@ -270,12 +294,6 @@ namespace tfm_web.Controllers
                 }
                 return Ok(new { Status = 200, message = "User Deleted!" });
             }
-        }
-
-        [HttpGet("getUsers-test")]
-        public IActionResult GetUsersTest()
-        {
-            return Ok("API is working");
         }
 
     }

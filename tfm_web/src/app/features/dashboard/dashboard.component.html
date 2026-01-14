@@ -6,16 +6,42 @@
             <h1>User Details</h1>
             <p class="welcome-text">Welcome back, {{ userName }}</p>
         </div>
-
-        <div class="search-box">
-            <input type="text" [(ngModel)]="searchText" placeholder="Search....." (input)="search()">
-            <button (click)="search()">Search</button>
-        </div>
-
         <button *ngIf="roleId === 1" routerLink="/register" class="add-btn premium-btn">
             <span class="material-icons">add</span> Add New User
         </button>
     </div>
+     
+        <div class="boxes">
+           
+          <!-- Pagination Next and Previous button -->
+        <div class="pagination">
+
+            <button (click)="prePage()" [disabled]="currentPage === 1">
+                 &lt;
+            </button>
+
+            <button
+                *ngFor="let page of pageNumbers"
+                (click)="goToPage(page)"
+                [class.active]="page === currentPage">
+                {{ page }}
+            </button>
+
+            <button (click)="nextPage()" [disabled]="currentPage === totalPages">
+                &gt;
+            </button>
+
+        </div>
+
+
+         <!-- search box -->
+          <div class="search-box">
+            <input type="text" [(ngModel)]="searchText" placeholder="Search....." (input)="search($event)">
+            <button (click)="search($event)">
+                <span class="material-icons">search</span>
+            </button>
+        </div>
+        </div>
 
     <div class="content-section">
         <div class="table-responsive">
@@ -31,7 +57,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr *ngFor="let user of users">
+                    <tr *ngFor="let user of getPaginatedUsers()">
                         <td>{{user.name}}</td>
                         <td>{{user.email}}</td>
                         <td>
@@ -42,12 +68,17 @@
                         </td>
                         <td>{{ user.joiningDate | date:'mediumDate' }}</td>
                         <td>{{user.department}}</td>
-                        <td *ngIf="roleId === 1" class="actions-cell">
-                            <button class="icon-btn edit" (click)="openEditModal(user)" title="Edit">
-                                <span class="material-icons">edit</span>
+                        <td *ngIf="roleId === 1 " class="actions-cell">
+                            <button class="icon-btn edit" (click)="openEditModal(user)"  [hidden]="isEditDisabled(user)" title="Edit">
+                                <span class="material-icons" >
+                                    edit</span>
                             </button>
-                            <button class="icon-btn delete" (click)="deleteUser(user.id)" title="Delete">
+                            <button class="icon-btn delete" (click)="deleteUser(user.id)" [hidden]="isDeleteDisabled(user)" title="Delete">
                                 <span class="material-icons">delete</span>
+                            </button>
+                            <button class="btn btn-sm btn-info icon-btn view" title="View the details of the user" (click)="openViewModal(user)">
+                                <span class="material-icons">visibility</span>
+
                             </button>
                         </td>
                     </tr>
@@ -60,12 +91,36 @@
     </div>
 </div>
 
+
+<!-- view Modal -->
+<div class="view-overlay" *ngIf="isViewModalOpen">
+    <div class="view-container">
+
+        <div class="view-header">
+            <h3>Users Details</h3>
+            <button class="view-close" (click)="closeViewModal()" title="Close">
+                <span class="material-icons">close</span>
+            </button>
+        </div>
+
+        <div class="view-body gap" *ngIf="selectedViewUser">
+            <div><strong>Name: </strong> {{ selectedViewUser.name }}</div>
+            <div><strong>Email: </strong> {{ selectedViewUser.email }}</div>
+            <div><strong>Department: </strong> {{ selectedViewUser.department }}</div>
+            <div><strong>Role: </strong> {{ selectedViewUser.roleType || roleType }}</div>
+        </div>
+
+    </div>
+</div>
+
+
+
 <!-- Modal -->
 <div class="modal-overlay" *ngIf="isModalOpen">
     <div class="modal-box">
         <div class="modal-header">
             <h3>Update User</h3>
-            <button class="close-btn" (click)="closeModal()">&times;</button>
+            <!-- <button class="close-btn" (click)="closeModal()">&times;</button> -->
         </div>
         <div class="modal-body">
             <div class="form-group">

@@ -34,8 +34,11 @@
 
             <div class="form-group">
                 <label for="password">Password</label>
-                <input type="password" id="password" formControlName="password" placeholder="Strong Password"
+                <input [type]="showPassword ? 'text' : 'password'" id="password" formControlName="password" placeholder="Strong Password"
                     [class.invalid]="registerForm.get('password')?.invalid && registerForm.get('password')?.touched">
+                     <span class="material-icons eye-icon" (click)="togglePassword()">
+                        {{ showPassword ? 'visibility' : 'visibility_off' }}
+                    </span>
                 <small class="error-msg"
                     *ngIf="registerForm.get('password')?.invalid && registerForm.get('password')?.touched">
                     Password must have uppercase, lowercase, number & special char.

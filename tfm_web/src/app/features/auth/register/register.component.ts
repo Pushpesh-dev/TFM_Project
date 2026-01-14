@@ -45,6 +45,13 @@ export class RegisterComponent implements OnInit {
         });
     }
 
+      showPassword: boolean = false;
+
+        togglePassword() {
+        this.showPassword = !this.showPassword;
+        }
+
+        
     submit() {
         if (this.registerForm.invalid) {
             this.registerForm.markAllAsTouched();

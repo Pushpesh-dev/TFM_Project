@@ -55,6 +55,7 @@ builder.Services.AddSwaggerGen(options =>
 // -------------------- Services --------------------
 builder.Services.AddTransient<EmailService>();
 builder.Services.AddScoped<JwtAuthorizeFilte>();
+builder.Services.AddScoped<IEmailService, EmailService>();
 
 // -------------------- Authentication --------------------
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

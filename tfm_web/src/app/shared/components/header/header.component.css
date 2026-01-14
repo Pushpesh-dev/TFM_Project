@@ -46,9 +46,60 @@
     font-size: 24px;
 }
 
-.actions{
+.actions {
     display: flex;
+    align-items: center;
     gap: 12px;
-    font-size: 1.5rem;
-    font-weight: 2rem;
+}
+
+/* Role label */
+.role {
+    padding: 6px 14px;
+    background-color: #e3f2fd;
+    color: #0d47a1;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 20px;
+    text-transform: capitalize;
+    white-space: nowrap;
+}
+
+/* Logout button */
+.logout-btn {
+    width: 40px;
+    height: 40px;
+    border: none;
+    outline: none;
+    border-radius: 50%;
+    background-color: #f44336;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.25s ease, transform 0.15s ease;
+}
+
+/* Icon size */
+.logout-btn .material-icons {
+    font-size: 20px;
+}
+
+/* Hover effect */
+.logout-btn:hover {
+    background-color: #d32f2f;
+    transform: scale(1.05);
+}
+
+/* Click effect */
+.logout-btn:active {
+    transform: scale(0.95);
+}
+
+.role{
+    /* border: 1px solid black; */
+    padding: 6px;
+    border-radius: 20px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: whitesmoke;
 }
