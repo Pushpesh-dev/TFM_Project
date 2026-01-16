@@ -30,9 +30,10 @@ export class AuthService {
                     if (response.user) {
                         if (response.user.roleId != undefined) {
                             localStorage.setItem(this.roleKey, response.user.roleId.toString());
-                        }
-                        if (response.user.roleType != undefined) {
-                            localStorage.setItem(this.roleType, response.user.roleType.toString());
+                             const roleType =
+                            response.user.roleId === 1 ? 'Admin' : 'User';
+                            localStorage.setItem(this.roleType, roleType);
+                            this.roleTypeSubject.next(roleType); 
                         }
                         if (response.user.name) {
                             localStorage.setItem(this.nameKey, response.user.name);
@@ -45,6 +46,10 @@ export class AuthService {
 
     register(userData: any): Observable<any> {
         return this.http.post(`${this.apiUrl}/add`, userData);
+    }
+
+    addProduct(products:any): Observable<any> {
+        return this.http.post(`${this.apiUrl}/addProduct`,products);
     }
 
     logout(): void {

@@ -22,4 +22,9 @@ export class UserService {
     deleteUser(id: number): Observable<any> {
         return this.http.delete(`${this.apiUrl}/delete/${id}`);
     }
+    
+    getProductData(): Observable<any[]> {
+         return this.http.get<any[]>(`${this.apiUrl}/getProduct`);
+    }
+
 }

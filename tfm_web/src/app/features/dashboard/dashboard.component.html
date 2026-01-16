@@ -54,6 +54,7 @@
                         <th>Joined</th>
                         <th>Department</th>
                         <th *ngIf="roleId === 1">Actions</th>
+                        <th>Add Product</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -80,6 +81,9 @@
                                 <span class="material-icons">visibility</span>
 
                             </button>
+                        </td>
+                        <td>
+                            <button routerLink="/products">Add</button>
                         </td>
                     </tr>
                     <tr *ngIf="users.length === 0 && !isLoading">

@@ -21,6 +21,7 @@ import { LoaderComponent } from './shared/components/loader/loader.component';
 
 // Core
 import { AuthInterceptor } from './core/interceptors/auth.interceptor';
+import { ProductsComponent } from './products/products.component';
 
 @NgModule({
   declarations: [
@@ -29,7 +30,8 @@ import { AuthInterceptor } from './core/interceptors/auth.interceptor';
     RegisterComponent,
     DashboardComponent,
     HeaderComponent,
-    LoaderComponent
+    LoaderComponent,
+    ProductsComponent
   ],
   imports: [
     BrowserModule,

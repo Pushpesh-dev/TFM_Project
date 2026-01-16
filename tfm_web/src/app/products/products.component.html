@@ -1,0 +1,126 @@
+<app-loader [loading]="isLoading"></app-loader>
+
+<!-- Product Table-->
+
+<button (click)="openModel()" class="button">Add Product</button>
+<div class="table-contanier" >
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Product Name</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Created Date</th>
+                <th>Expire Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let product of products">
+                <td>{{product.productName}}</td>
+                <td>{{product.price}}</td>
+                <td>{{product.stockQuantity}}</td>
+                <td>{{product.createdDate | date:'mediumDate'}}</td>
+                <td>{{product.expireDate | date:'mediumDate'}}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- Add Product -->
+ <div class="product-container" *ngIf="ShowModal">
+    <div class="product-card">
+        <div class="product-header">
+            <h1>Add Product</h1>
+            <button class="view-close" (click)="closeViewModal()" title="Close">
+                <span class="material-icons">close</span>
+            </button>
+            <!-- <p>Join us today! It takes only few steps.</p> -->
+        </div>
+
+        <form [formGroup]="productForm" (ngSubmit)="submit()" autocomplete="off">
+            <div class="form-group">
+                <label for="productName">Product Name</label>
+                <input type="text" id="productName" formControlName="productName" placeholder="Enter the product name "
+                    [class.invalid]="productForm.get('productName')?.invalid && productForm.get('productName')?.touched">
+                <small class="error-msg"
+                    *ngIf="productForm.get('productName')?.invalid && productForm.get('productName')?.touched">
+                   Product Name is required (min 3 chars).
+                </small>
+            </div>
+
+            <div class="form-group">
+                <label for="price">Price</label>
+                <input type="number" id="price" formControlName="price" placeholder="Enter the price"
+                    [class.invalid]="productForm.get('price')?.invalid && productForm.get('price')?.touched">
+                <small class="error-msg"
+                    *ngIf="productForm.get('price')?.getError('required') && productForm.get('price')?.touched">
+                    Price is required.
+                </small>
+            </div>
+
+            <div class="form-group">
+                <label for="stockQuantity">StockQuantity</label>
+                <input type="number" id="stockQuantity" formControlName="stockQuantity" placeholder="Enter the StockQuantity"
+                    [class.invalid]="productForm.get('stockQuantity')?.invalid && productForm.get('stockQuantity')?.touched">
+                <small class="error-msg"
+                    *ngIf="productForm.get('stockQuantity')?.getError('required') && productForm.get('stockQuantity')?.touched">
+                    StockQuantity is required.
+                </small>
+            </div>
+
+            <div class="form-group">
+                <label for="description">Description</label>
+                <input type="text" id="description" formControlName="description" placeholder="Enter the Description"
+                    [class.invalid]="productForm.get('description')?.invalid && productForm.get('description')?.touched">
+                <small class="error-msg"
+                    *ngIf="productForm.get('description')?.getError('required') && productForm.get('description')?.touched">
+                    Description is required.
+                </small>
+            </div>
+
+            <div class="form-row">
+              
+                <div class="form-group half">
+                    <label for="createdDate">Created Date</label>
+                    <input type="date" id="createdDate" formControlName="createdDate" [max]="today"
+                        [class.invalid]="productForm.get('created Date')?.invalid && productForm.get('createdDate')?.touched">
+                    <small class="error-msg"
+                        *ngIf="productForm.get('createdDate')?.invalid && productForm.get('createdDate')?.touched">
+                        Required.
+                    </small>
+                </div>
+
+                 <div class="form-group half">
+                    <label for="expireDate">ExpireDate</label>
+                    <input type="date" id="expire Date" formControlName="expireDate"
+                        [class.invalid]="productForm.get('expireDate')?.invalid && productForm.get('expireDate')?.touched">
+                    <small class="error-msg"
+                        *ngIf="productForm.get('expireDate')?.invalid && productForm.get('expireDate')?.touched">
+                        Required.
+                    </small>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="isActive">IsActive</label>
+                <select id="isActive" formControlName="isActive"
+                    [class.invalid]="productForm.get('isActive')?.invalid && productForm.get('isActive')?.touched">
+                    <option value="">Select IsActive</option>
+                    <option value="1">Aviable</option>
+                    <option value="2">Out of stock</option>
+                </select>
+                <small class="error-msg"
+                    *ngIf="productForm.get('isActive')?.invalid && productForm.get('isActive')?.touched">
+                    IsActive is required.
+                </small>
+            </div>
+
+            <button type="submit" class="submit-btn">
+              <span *ngIf="!isLoading">Add Product</span>
+              <span *ngIf="isLoading">Loading......</span>
+            </button>
+        </form>
+
+        
+    </div>
+</div>

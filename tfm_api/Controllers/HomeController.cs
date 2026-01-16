@@ -32,6 +32,7 @@ namespace tfm_web.Controllers
         }
 
         //Add an new user
+        [Authorize]
         [HttpPost("add")]
         public async Task<IActionResult> AddUser([FromBody] Master AddUsers)
         {
@@ -39,6 +40,13 @@ namespace tfm_web.Controllers
             {
                 return BadRequest("Invalid user data.");
             }
+
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (userIdClaim == null)
+                return Unauthorized("User not logged in.");
+
+            int createdBy = int.Parse(userIdClaim);
+
             var hasher = new PasswordHasher<object>();
             string passwordHash = hasher.HashPassword(null, AddUsers.Password);
 
@@ -52,6 +60,8 @@ namespace tfm_web.Controllers
                 Cmd.Parameters.AddWithValue("@Department", AddUsers.Department);
                 Cmd.Parameters.AddWithValue("@JoiningDate", AddUsers.JoiningDate);
                 Cmd.Parameters.AddWithValue("@RoleId", AddUsers.RoleId);
+                Cmd.Parameters.Add("@CreatedBy", SqlDbType.Int).Value = createdBy;
+
                 await con.OpenAsync();
                 int result = await Cmd.ExecuteNonQueryAsync();
                 await con.CloseAsync();
@@ -78,6 +88,7 @@ namespace tfm_web.Controllers
                 }
                 else
                 {
+
                     return StatusCode(500, "Error adding user.");
                 }
             }
@@ -104,21 +115,23 @@ namespace tfm_web.Controllers
         }
 
         //get  data
-        [Authorize(Roles = "Admin,Employee")]
+        [Authorize(Roles = "Admin,User")]
         [HttpGet("getUsers")]
         public async Task<ApiResponse<List<UserWithRole>>> GetUsers()
         {
             var response = new ApiResponse<List<UserWithRole>>();
             var roleClaim = User.Claims.FirstOrDefault(c => c.Type == "roleId");
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
 
-            if (roleClaim == null)
+            if (roleClaim == null || userIdClaim == null)
             {
                 response.Success = false;
                 response.Message = "Required claims missing in token";
                 return response;
             }
 
-            if (!int.TryParse(roleClaim.Value, out int roleIdFromToken))
+            if (!int.TryParse(roleClaim.Value, out int roleIdFromToken) ||
+             !int.TryParse(userIdClaim.Value, out int userIdFromToken))
             {
                 response.Success = false;
                 response.Message = "Invalid roleId in token";
@@ -138,6 +151,7 @@ namespace tfm_web.Controllers
 
                 // ✅ Pass JWT-based parameters (secure)
                 command.Parameters.Add("@RoleId", SqlDbType.Int).Value = roleIdFromToken;
+                command.Parameters.Add("@UserId", SqlDbType.Int).Value = userIdFromToken;
                 await connection.OpenAsync();
                 await using var reader = await command.ExecuteReaderAsync();
 
@@ -145,7 +159,7 @@ namespace tfm_web.Controllers
                 {
                     users.Add(new UserWithRole
                     {
-                        Id = Convert.ToInt32(reader["Id"]),
+                        UserId = Convert.ToInt32(reader["UserId"]),
                         Name = reader["Name"]?.ToString() ?? string.Empty,
                         Email = reader["Email"]?.ToString() ?? string.Empty,
                         Department = reader["Department"]?.ToString() ?? string.Empty,
@@ -194,7 +208,7 @@ namespace tfm_web.Controllers
                         var user = new
                         {
 
-                            Id = Convert.ToInt32(reader["Id"]),
+                            UserId = Convert.ToInt32(reader["UserId"]),
                             Email = reader["Email"].ToString(),
                             RoleId = Convert.ToInt32(reader["RoleId"]),
                             RoleName = reader["RoleName"].ToString(),
@@ -202,7 +216,7 @@ namespace tfm_web.Controllers
                         };
 
                         var jwtToken = new JwtToken(_Config);
-                        String token = jwtToken.GenerateJSONWebToken(user.Id, user.Email, user.RoleName, user.RoleId);
+                        String token = jwtToken.GenerateJSONWebToken(user.UserId, user.Email, user.RoleName, user.RoleId);
                         return Ok(new { user, token });
                     }
 
@@ -218,21 +232,21 @@ namespace tfm_web.Controllers
             }
         }
 
-        [HttpGet("get/{Id}")]
-        public IActionResult GetEditData(int Id)
+        [HttpGet("get/{UserId}")]
+        public IActionResult GetEditData(int UserId)
         {
             using (SqlCommand cmd = new SqlCommand("Edit", con))
             {
                 con.Open();
                 cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@Id", Id);
+                cmd.Parameters.AddWithValue("@UserId", UserId);
                 SqlDataReader reader = cmd.ExecuteReader();
 
                 if (reader.Read())
                 {
                     var Master = new
                     {
-                        Id = reader["Id"],
+                        UserId = reader["UserId"],
                         Name = reader["Name"],
                         Email = reader["Email"],
                         Department = reader["Department"]
@@ -245,14 +259,14 @@ namespace tfm_web.Controllers
             }
         }
 
-        [HttpPut("update/{Id}")]
-        public IActionResult EditData(int Id, [FromBody] UpdateData newData)
+        [HttpPut("update/{UserId}")]
+        public IActionResult EditData(int UserId, [FromBody] UpdateData newData)
         {
             using (SqlCommand cmd = new SqlCommand("Edit", con))
             {
                 con.Open();
                 cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@Id", Id);
+                cmd.Parameters.AddWithValue("@UserId", UserId);
 
                 SqlDataReader reader = cmd.ExecuteReader();
 
@@ -266,7 +280,7 @@ namespace tfm_web.Controllers
                 {
 
                     Updatecmd.CommandType = CommandType.StoredProcedure;
-                    Updatecmd.Parameters.AddWithValue("@Id", Id);
+                    Updatecmd.Parameters.AddWithValue("@UserId", UserId);
                     Updatecmd.Parameters.AddWithValue("@Name", newData.Name);
                     Updatecmd.Parameters.AddWithValue("@Email", newData.Email);
                     Updatecmd.Parameters.AddWithValue("@Department", newData.Department);
@@ -277,12 +291,12 @@ namespace tfm_web.Controllers
             return Ok(new { status = 200, message = "User has been updated" });
         }
 
-        [HttpDelete("delete/{Id}")]
-        public async Task<IActionResult> DeleteUser(int Id)
+        [HttpDelete("delete/{UserId}")]
+        public async Task<IActionResult> DeleteUser(int UserId)
         {
-            using (SqlCommand cmd = new SqlCommand("UPDATE UsersData SET Deleted = 0 WHERE Id = @Id", con))
+            using (SqlCommand cmd = new SqlCommand("UPDATE UsersData SET Deleted = 0 WHERE UserId = @UserId", con))
             {
-                cmd.Parameters.AddWithValue("@Id", Id);
+                cmd.Parameters.AddWithValue("@UserId", UserId);
 
                 await con.OpenAsync();
                 int rowAffected = await cmd.ExecuteNonQueryAsync();
@@ -293,6 +307,60 @@ namespace tfm_web.Controllers
                     return NotFound("User not found");
                 }
                 return Ok(new { Status = 200, message = "User Deleted!" });
+            }
+        }
+
+        //AddProduct
+        [HttpPost("addProduct")]
+        public async Task<IActionResult> AddProdAddProduct([FromBody] Products AddProd)
+        {
+            int result = 0;
+            using(SqlCommand cmd = new SqlCommand("AddProducts", con))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@ProductName", AddProd.ProductName);
+                cmd.Parameters.AddWithValue("@Price", AddProd.Price);
+                cmd.Parameters.AddWithValue("@StockQuantity", AddProd.StockQuantity);
+                cmd.Parameters.AddWithValue("@Description", AddProd.Description);
+                cmd.Parameters.AddWithValue("@IsActive", AddProd.IsActive);
+                cmd.Parameters.AddWithValue("@CreatedDate", AddProd.CreatedDate);
+                cmd.Parameters.AddWithValue("@ExpireDate", AddProd.ExpireDate);
+
+                await con.OpenAsync();
+                result =  await cmd.ExecuteNonQueryAsync();
+                await con.CloseAsync();
+            }
+                return Ok(new { success = result > 0, message = result > 0 ? "Add Successfully!" : "Failed to add product" });
+            
+        }
+
+
+        [HttpGet("getProduct")]
+        public async Task<IActionResult> GetProducts()
+        {
+            List<Products> products = new List<Products>();
+            using(SqlCommand cmd = new SqlCommand("GetProduct",con))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+                await con.OpenAsync();
+                var reader = await cmd.ExecuteReaderAsync();
+                while (await reader.ReadAsync())
+                {
+                    products.Add(new Products
+                    {
+                        Id = Convert.ToInt32(reader["Id"]),
+                        ProductName = reader["ProductName"].ToString(),
+                        Price = Convert.ToDecimal(reader["Price"]),
+                        StockQuantity = Convert.ToInt32(reader["StockQuantity"]),
+                        Description = reader["Description"].ToString(),
+                        IsActive = Convert.ToInt32(reader["IsActive"]),
+                        CreatedDate = Convert.ToDateTime(reader["CreatedDate"]),
+                        ExpireDate = Convert.ToDateTime(reader["ExpireDate"])
+                    });
+                }
+                await con.CloseAsync();
+                return Ok(new { Status = 200, Message = "Success",products});
+
             }
         }
 

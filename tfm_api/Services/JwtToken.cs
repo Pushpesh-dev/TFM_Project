@@ -14,7 +14,7 @@ namespace tfm_web.Services
         {
             _Config = configService;
         }
-        public string GenerateJSONWebToken(int Id , String Email, String RoleName, int RoleId)
+        public string GenerateJSONWebToken(int UserId , String Email, String RoleName, int RoleId)
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_Config["JwtString:Key"]));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha512);
@@ -22,7 +22,7 @@ namespace tfm_web.Services
 
             var claims = new[]
             {
-                 new Claim("Id",Id.ToString()),
+                 new Claim(ClaimTypes.NameIdentifier, UserId.ToString()),
                  new Claim("Email",Email.ToString()),
                   new Claim("roleId", RoleId.ToString()),
                  new Claim("RoleName",RoleName.ToString()),
